@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christopher Vieweg | The Warp Core Flagship</title>
+    <!-- 3D Model Viewer Script (v4.0 for enhanced orientation support) -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    <style>
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none; /* Hidden by default */
+            width: 100%;
+            height: 100%;
+        }
+
+        .active-slide {
+            display: block; /* Only show the current slide */
+        }
+
+        /* Nav Arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 157, 255, 0.2);
+            color: var(--lcars-blue);
+            border: 1px solid var(--lcars-blue);
+            padding: 15px;
+            cursor: pointer;
+            z-index: 10;
+            font-family: 'Antonio', sans-serif;
+            transition: 0.3s;
+        }
+
+        .nav-arrow:hover {
+            background: var(--lcars-blue);
+            color: black;
+        }
+
+        .prev { left: 10px; }
+        .next { right: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&display=swap');
+        
+        :root {
+            --lcars-gold: #ff9d00; --lcars-blue: #009dff;
+            --lcars-purple: #cc99ff; --lcars-red: #ff4444;
+            --lcars-bg: #000000;
+        }
+
+        body {
+            background-color: var(--lcars-bg); color: #fff;
+            font-family: 'Antonio', sans-serif; margin: 0; padding: 20px;
+            display: flex; justify-content: center;
+        }
+
+        .container {
+            display: grid; grid-template-columns: 80px 1fr; gap: 15px;
+            max-width: 1200px; width: 100%;
+        }
+
+        /* LCARS Sidebar Frame */
+        .sidebar { display: flex; flex-direction: column; gap: 8px; }
+        .elbow { height: 120px; background: var(--lcars-gold); border-radius: 40px 0 0 0; position: relative; }
+        .elbow::after { content: ""; position: absolute; bottom: 0; right: 0; width: 40px; height: 80px; background: black; border-radius: 25px 0 0 0; }
+        .bar { height: 50px; background: var(--lcars-blue); }
+        .bar.purple { background: var(--lcars-purple); }
+        .bar.fill { flex-grow: 1; background: var(--lcars-purple); border-radius: 0 0 0 40px; }
+
+        /* Main Content Area */
+        .main-content { padding-right: 20px; }
+        
+        header { 
+            display: flex; justify-content: space-between; align-items: flex-end;
+            border-bottom: 4px solid var(--lcars-gold); padding-bottom: 10px; margin-bottom: 30px;
+        }
+        
+        h1 { margin: 0; text-transform: uppercase; font-size: 2.2em; color: var(--lcars-gold); }
+        .serial-no { font-size: 0.9em; color: var(--lcars-purple); }
+
+        /* Product Showcase Section */
+        .hero-section {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px;
+        }
+
+        .product-visual {
+            background: rgba(255,255,255,0.05); border: 1px solid #333;
+            border-radius: 20px; height: 500px; display: flex; 
+            align-items: center; justify-content: center; position: relative;
+            overflow: hidden;
+        }
+        
+        .product-visual::before {
+            content: "SCANNING MATRIX..."; position: absolute; top: 15px; left: 15px;
+            font-size: 0.7em; color: var(--lcars-blue); z-index: 5;
+        }
+
+        .specs-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+
+        .spec-card {
+            border-left: 5px solid var(--lcars-blue); padding: 10px;
+            background: rgba(0, 157, 255, 0.05);
+        }
+
+        .spec-label { font-size: 0.7em; text-transform: uppercase; color: var(--lcars-purple); }
+        .spec-value { font-size: 1.2em; font-weight: bold; }
+
+        .cta-box {
+            background: rgba(255, 157, 0, 0.1); border: 2px solid var(--lcars-gold);
+            padding: 30px; border-radius: 15px; text-align: center;
+        }
+
+        button.acquire-btn {
+            background: var(--lcars-gold); color: black; border: none;
+            padding: 15px 40px; font-family: 'Antonio'; font-weight: bold;
+            font-size: 1.5em; text-transform: uppercase; cursor: pointer;
+            border-radius: 5px; transition: transform 0.2s;
+        }
+
+        button.acquire-btn:hover { transform: scale(1.05); background: #ffb84d; }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .hero-section { grid-template-columns: 1fr; }
+            .product-visual { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="elbow"></div>
+            <div class="bar"></div>
+            <div class="bar purple"></div>
+            <div class="bar"></div>
+            <div class="bar fill"></div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <div>
+                    <h1>The Warp Core</h1>
+                    <div class="serial-no">Registry: CV-WARPCORE-01</div>
+                </div>
+                <div style="text-align: right; color: var(--lcars-gold); font-size: 0.8em;">CORE STATUS: OPTIMAL</div>
+            </header>
+
+            <section class="hero-section">
+                <div class="carousel-container">
+                    <!-- Navigation Arrows -->
+                    <button class="nav-arrow prev" onclick="changeSlide(-1)">&#10094;</button>
+                    <button class="nav-arrow next" onclick="changeSlide(1)">&#10095;</button>
+
+                    <!-- Slide 1: 3D Render -->
+                    <div class="slide active-slide">
+                        <model-viewer 
+                            src="3D Renders/TNG Warp Core.glb" 
+                            environment-image="neutral"
+                            exposure="0.4"
+                            shadow-intensity="3" 
+                            shadow-softness="0"
+                            orientation="0 -90deg 0"
+                            camera-controls 
+                            auto-rotate
+                            style="width: 100%; height: 100%; background-color: transparent;">
+
+                            <div slot="progress-bar" style="color: var(--lcars-gold); font-family: 'Antonio'; letter-spacing: 2px;">
+                                SYNCHRONIZING DILITHIUM MATRIX...
+                            </div>
+                        </model-viewer>
+                    </div>
+
+                    <!-- Slide 2: GIF of LEDs in Action -->
+                    <div class="slide">
+                        <img src="Images/TNG Chamber Core 2.jpg" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+
+                    <!-- Slide 3: WebUI Screenshot -->
+                    <div class="slide">
+                        <img src="Images/TNG Base.jpg" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+
+                    <!-- Slide 3: WebUI Screenshot -->
+                    <div class="slide">
+                        <img src="Images/TNG Front Full.jpg" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+
+                    <!-- Slide 3: WebUI Screenshot -->
+                    <div class="slide">
+                        <img src="Images/TNG Warp Core Lit Up Base.jpg" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+
+                    <!-- Slide 3: WebUI Screenshot -->
+                    <div class="slide">
+                        <img src="Images/Warp Core Track Listing.png" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+
+                    <!-- Slide 4: Real-world Hardware Video *****Not working, needs troubleshooting***** -->
+                    <!-- <div class="slide">
+                        <video width="100%" height="100%" controls preload="auto" playsinline style="object-fit: contain; background-color: black;">
+                            <source src="Video/TNG Warp 3.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div> -->
+                </div>
+
+                <div class="product-info">
+                    <p style="font-size: 1.2em; line-height: 1.6; margin-top: 0;">
+                        Engineered by Christopher Vieweg, the Warp Core is a custom flagship device merging physical interactivity with embedded IoT firmware. It features dynamic LED control, tactile inputs, and robust audio functionality, all seamlessly managed through an integrated web ecosystem.
+                    </p>
+                    
+                    <div class="specs-grid">
+                        <div class="spec-card">
+                            <div class="spec-label">Processor</div>
+                            <div class="spec-value">ESP32 MCU</div>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-label">Interface</div>
+                            <div class="spec-value">Physical Buttons & WebUI</div>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-label">Illumination</div>
+                            <div class="spec-value">Dynamic LED Control</div>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-label">Connectivity</div>
+                            <div class="spec-value">2.4GHz WiFi Module</div>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-label">Acoustics</div>
+                            <div class="spec-value">Integrated Audio</div>
+                        </div>
+                        <div class="spec-card">
+                            <div class="spec-label">Power Management</div>
+                            <div class="spec-value">Custom Sleep Timer</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-box">
+                <h2 style="text-transform: uppercase; margin-top: 0; color: var(--lcars-gold);">Initiate Acquisition</h2>
+                <p>Custom manufacturing slots are strictly limited for the 2026 fiscal year.</p>
+                <button class="acquire-btn" onclick="alert('Uplink established. Awaiting payment credentials.')">Acquire Unit</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function changeSlide(direction) {
+            // Remove active class from current slide
+            slides[currentSlide].classList.remove('active-slide');
+            
+            // Calculate new slide index
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            
+            // Add active class to new slide
+            slides[currentSlide].classList.add('active-slide');
+        }
+    </script>
+
+</body>
+</html>
